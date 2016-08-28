@@ -347,10 +347,6 @@ class Adapter extends DefaultAdapter
     public function guessIdentifier(callable $fn = null)
     {
         static $guesser;
-        static $table;
-        if (isset($table)) {
-            return $table;
-        }
         if (!isset($guesser)) {
             $guesser = function ($class) {
                 $class = preg_replace('@\\\\?Model$@', '', $class);
@@ -360,11 +356,7 @@ class Adapter extends DefaultAdapter
         if (!isset($fn)) {
             $fn = $guesser;
         }
-        $class = get_class($this);
-        if (strpos($class, '@anonymous') !== false) {
-            $class = (new ReflectionClass($this))->getParentClass()->name;
-        }
-        return $fn($class);
+        return parent::guessIdentifier($fn);
     }
 }
 
