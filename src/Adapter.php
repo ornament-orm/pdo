@@ -3,6 +3,7 @@
 namespace Ornament\Pdo;
 
 use Ornament\Ornament\DefaultAdapter;
+use Ornament\Ornament\State;
 use Ornament\Container;
 use Ornament\Exception;
 use PDOException;
@@ -334,6 +335,36 @@ class Adapter extends DefaultAdapter
         } catch (PDOException $e) {
             return false;
         }
+    }
+
+    /**
+     * Return the guesstimated identifier, optionally by using the callback
+     * passed as an argument.
+     *
+     * @param callable $fn Optional callback doing the guesstimating.
+     * @return string A guesstimated identifier.
+     */
+    public function guessIdentifier(callable $fn = null)
+    {
+        static $guesser;
+        static $table;
+        if (isset($table)) {
+            return $table;
+        }
+        if (!isset($guesser)) {
+            $guesser = function ($class) {
+                $class = preg_replace('@\\\\?Model$@', '', $class);
+                return State::unCamelCase($class);
+            };
+        }
+        if (!isset($fn)) {
+            $fn = $guesser;
+        }
+        $class = get_class($this);
+        if (strpos($class, '@anonymous') !== false) {
+            $class = (new ReflectionClass($this))->getParentClass()->name;
+        }
+        return $fn($class);
     }
 }
 
