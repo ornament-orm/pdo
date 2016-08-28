@@ -1,0 +1,15 @@
+{
+    "name": "ornament/pdo",
+    "description": "PDO adapter for Ornament",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marijn Ophorst",
+            "email": "marijn@monomelodies.nl"
+        }
+    ],
+    "require": {
+        "ornament/ornament": "^0.9.0"
+    }
+}
